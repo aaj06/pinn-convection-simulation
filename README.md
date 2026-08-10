@@ -1,1 +1,87 @@
-# pinn-convection-simulation
+# Physics-Informed Neural Network Simulation
+
+The objective of this repository is to model/analyze magnetohydrodynamic (MHD) mixed convection heat transfer inside a lid-driven triangular cavity with a circular obstacle using neural networks within the 3 following cases:
+
+
+Case 1: Purely data-driven DNN's (deep neural networks)
+Case 2: Limited data-driven 
+Case 3: Purely physics-informed
+
+## Mathematical setup
+
+1. Governing PDEs (Navier Stokes + Energy)
+
+$$
+\frac{\partial U}{\partial X} + \frac{\partial V}{\partial Y} = 0
+$$
+
+$$
+U \frac{\partial U}{\partial X} + V \frac{\partial U}{\partial Y} = -\frac{\partial P}{\partial X} + \frac{1}{\text{Re}} \left( \frac{\partial^2 U}{\partial X^2} + \frac{\partial^2 U}{\partial Y^2} \right)
+$$
+
+$$
+U \frac{\partial V}{\partial X} + V \frac{\partial V}{\partial Y} = -\frac{\partial P}{\partial Y} + \frac{1}{\text{Re}} \left( \frac{\partial^2 V}{\partial X^2} + \frac{\partial^2 V}{\partial Y^2} \right) + \text{Ri} \, \theta - \frac{\text{Ha}^2}{\text{Re}} V
+$$
+
+$$
+U \frac{\partial \theta}{\partial X} + V \frac{\partial \theta}{\partial Y} = \frac{1}{\text{Re} \cdot \text{Pr}} \left( \frac{\partial^2 \theta}{\partial X^2} + \frac{\partial^2 \theta}{\partial Y^2} \right)
+$$
+
+Where:
+* $U, V$: Dimensionless velocity components in $X$ and $Y$ directions
+* $P$: Dimensionless fluid pressure
+* $\theta$: Dimensionless temperature ($\theta = 1$ is Hot, $\theta = 0$ is Cold)
+* $\text{Re}$: Reynolds number (Inertial vs. Viscous forces)
+* $\text{Ri}$: Richardson number (Buoyancy vs. Shear forces, $\text{Ri} = \text{Gr}/\text{Re}^2$)
+* $\text{Pr}$: Prandtl number (Momentum vs. Thermal diffusivity)
+* $\text{Ha}$: Hartmann number (Magnetic force vs. Viscous forces)
+
+2. Boundary Conditions
+
+The domain of interest consists of a sliding top lid, two stationary sidewalls, and an internal circular obstacle:
+
+| Boundary | Velocity ($U, V$) | Temperature ($\theta$) | Physical Meaning |
+| :--- | :--- | :--- | :--- |
+| **Top Lid** ($Y = Y_{\text{top}}$) | $U = 1, \; V = 0$ | $\theta = 1$ | Moving, Hot Boundary |
+| **Left Wall** | $U = 0, \; V = 0$ | $\theta = 0$ | No-slip, Cold Boundary |
+| **Right Wall** | $U = 0, \; V = 0$ | $\theta = 0$ | No-slip, Cold Boundary |
+| **Circular Obstacle** | $U = 0, \; V = 0$ | $\theta = 0$ | No-slip, Cold Internal Obstacle |
+## Case 1
+- Neural networks purely fed data
+- Fully supervised learning
+
+## Case 2
+- Trained on t in [0,0.4]
+- Expected extrapolation error for t > 0.4
+
+## Case 3
+- No training data
+
+# Loss
+$$\mathcal{L}_{\text{total}} = w_{\text{pde}} \mathcal{L}_{\text{PDE}} + w_{\text{bc}} \mathcal{L}_{\text{BC}}$$
+
+* **PDE Residual Loss:**
+  $$\mathcal{L}_{\text{PDE}} = \frac{1}{N_f} \sum \left( \mathcal{R}_{\text{mass}}^2 + \mathcal{R}_{u\text{-mom}}^2 + \mathcal{R}_{v\text{-mom}}^2 + \mathcal{R}_{\text{energy}}^2 \right)$$
+
+* **Mass Continuity Residual:**
+  $$\mathcal{R}_{\text{mass}} = \frac{\partial U}{\partial X} + \frac{\partial V}{\partial Y}$$
+
+* **$X$-Momentum Residual:**
+  $$\mathcal{R}_{u\text{-mom}} = U \frac{\partial U}{\partial X} + V \frac{\partial U}{\partial Y} + \frac{\partial P}{\partial X} - \frac{1}{\text{Re}} \left( \frac{\partial^2 U}{\partial X^2} + \frac{\partial^2 U}{\partial Y^2} \right)$$
+
+* **$Y$-Momentum Residual:**
+  $$\mathcal{R}_{v\text{-mom}} = U \frac{\partial V}{\partial X} + V \frac{\partial V}{\partial Y} + \frac{\partial P}{\partial Y} - \frac{1}{\text{Re}} \left( \frac{\partial^2 V}{\partial X^2} + \frac{\partial^2 V}{\partial Y^2} \right) - \text{Ri} \, \theta + \frac{\text{Ha}^2}{\text{Re}} V$$
+
+* **Energy Conservation Residual:**
+  $$\mathcal{R}_{\text{energy}} = U \frac{\partial \theta}{\partial X} + V \frac{\partial \theta}{\partial Y} - \frac{1}{\text{Re} \cdot \text{Pr}} \left( \frac{\partial^2 \theta}{\partial X^2} + \frac{\partial^2 \theta}{\partial Y^2} \right)$$
+
+* **Boundary Condition Loss:**
+  $$\mathcal{L}_{\text{BC}} = \frac{1}{N_b} \sum \left( (U - U_{\text{target}})^2 + (V - V_{\text{target}})^2 + (\theta - \theta_{\text{target}})^2 \right)$$
+
+## Key Observations
+- Physics-informed models are only fed governing equations, no data
+- Data-driven are only given data points, no physics
+- Physics-informed predictive models are more accurate than data-driven models
+
+## Author
+Ameera Junaid
