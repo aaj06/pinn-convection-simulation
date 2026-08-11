@@ -17,29 +17,23 @@ To optimize network execution and streamline loss equations:
 
 1. Governing PDEs (Navier Stokes + Energy)
 
-$$
-\frac{\partial U}{\partial X} + \frac{\partial V}{\partial Y} = 0
-$$
+* **Mass Continuity:**
+  $$\frac{\partial U}{\partial X} + \frac{\partial V}{\partial Y} = 0$$
 
-$$
-U \frac{\partial U}{\partial X} + V \frac{\partial U}{\partial Y} = -\frac{\partial P}{\partial X} + \frac{1}{\text{Re}} \left( \frac{\partial^2 U}{\partial X^2} + \frac{\partial^2 U}{\partial Y^2} \right)
-$$
+* **$X$-Momentum:**
+  $$U \frac{\partial U}{\partial X} + V \frac{\partial U}{\partial Y} + \frac{\partial P}{\partial X} - \left( \frac{\partial^2 U}{\partial X^2} + \frac{\partial^2 U}{\partial Y^2} \right) = 0$$
 
-$$
-U \frac{\partial V}{\partial X} + V \frac{\partial V}{\partial Y} = -\frac{\partial P}{\partial Y} + \frac{1}{\text{Re}} \left( \frac{\partial^2 V}{\partial X^2} + \frac{\partial^2 V}{\partial Y^2} \right) + \text{Ri} \, \theta - \frac{\text{Ha}^2}{\text{Re}} V
-$$
+* **$Y$-Momentum (with Buoyancy & Lorentz Drag):**
+  $$U \frac{\partial V}{\partial X} + V \frac{\partial V}{\partial Y} + \frac{\partial P}{\partial Y} - \left( \frac{\partial^2 V}{\partial X^2} + \frac{\partial^2 V}{\partial Y^2} \right) - \text{Ri} \, \theta + \text{Ha}^2 \, V = 0$$
 
-$$
-U \frac{\partial \theta}{\partial X} + V \frac{\partial \theta}{\partial Y} = \frac{1}{\text{Re} \cdot \text{Pr}} \left( \frac{\partial^2 \theta}{\partial X^2} + \frac{\partial^2 \theta}{\partial Y^2} \right)
-$$
+* **Energy Conservation:**
+  $$U \frac{\partial \theta}{\partial X} + V \frac{\partial \theta}{\partial Y} - \left( \frac{\partial^2 \theta}{\partial X^2} + \frac{\partial^2 \theta}{\partial Y^2} \right) = 0$$
 
 Where:
 * $U, V$: Dimensionless velocity components in $X$ and $Y$ directions
 * $P$: Dimensionless fluid pressure
 * $\theta$: Dimensionless temperature ($\theta = 1$ is Hot, $\theta = 0$ is Cold)
-* $\text{Re}$: Reynolds number (Inertial vs. Viscous forces)
 * $\text{Ri}$: Richardson number (Buoyancy vs. Shear forces, $\text{Ri} = \text{Gr}/\text{Re}^2$)
-* $\text{Pr}$: Prandtl number (Momentum vs. Thermal diffusivity)
 * $\text{Ha}$: Hartmann number (Magnetic force vs. Viscous forces)
 
 2. Boundary Conditions
@@ -49,8 +43,8 @@ The domain of interest consists of a sliding top lid, two stationary sidewalls, 
 | Boundary | Velocity ($U, V$) | Temperature ($\theta$) | Physical Meaning |
 | :--- | :--- | :--- | :--- |
 | **Top Lid** ($Y = Y_{\text{top}}$) | $U = 1, \; V = 0$ | $\theta = 1$ | Moving, Hot Boundary |
-| **Left Wall** | $U = 0, \; V = 0$ | $\theta = 0$ | No-slip, Adiabatic (Insulated) Boundary |
-| **Right Wall** | $U = 0, \; V = 0$ | $\theta = 0$ | No-slip, Adiabatic (Insulated) Boundary |
+| **Left Wall** | $U = 0, \; V = 0$ | $\frac{\partial \theta}{\partial n} = 0$ | No-slip, Adiabatic (Insulated) Boundary |
+| **Right Wall** | $U = 0, \; V = 0$ | $\frac{\partial \theta}{\partial n} = 0$ | No-slip, Adiabatic (Insulated) Boundary |
 | **Circular Obstacle** | $U = 0, \; V = 0$ | $\theta = 0$ | No-slip, Cold Internal Obstacle |
 ## Case 1
 - Neural networks purely fed data
