@@ -7,6 +7,12 @@ Case 1: Purely data-driven DNN's (deep neural networks)
 Case 2: Limited data-driven 
 Case 3: Purely physics-informed
 
+## Problem Simplifications
+To optimize network execution and streamline loss equations.
+1. **Reynolds Number ($\text{Re} = 1$):** We set the non-dimensional Reynolds number to $\text{Re} = 1$. This simplifies the viscous diffusion operator $\frac{1}{\text{Re}}\nabla^2 \mathbf{u} \to \nabla^2 \mathbf{u}$ and eliminates the $\frac{1}{\text{Re}}$ coefficient across all momentum and Lorentz force terms without disrupting viscous drag from the sliding lid.
+2. **Prandtl Number ($\text{Pr} = 1$):** Assuming the unit Prandtl number simplifies the thermal diffusion term $\frac{1}{\text{Re}\cdot\text{Pr}}\nabla^2 \theta \to \nabla^2 \theta$.
+
+
 ## Mathematical setup
 
 1. Governing PDEs (Navier Stokes + Energy)
@@ -43,8 +49,8 @@ The domain of interest consists of a sliding top lid, two stationary sidewalls, 
 | Boundary | Velocity ($U, V$) | Temperature ($\theta$) | Physical Meaning |
 | :--- | :--- | :--- | :--- |
 | **Top Lid** ($Y = Y_{\text{top}}$) | $U = 1, \; V = 0$ | $\theta = 1$ | Moving, Hot Boundary |
-| **Left Wall** | $U = 0, \; V = 0$ | $\theta = 0$ | No-slip, Cold Boundary |
-| **Right Wall** | $U = 0, \; V = 0$ | $\theta = 0$ | No-slip, Cold Boundary |
+| **Left Wall** | $U = 0, \; V = 0$ | $\theta = 0$ | No-slip, Adiabatic (Insulated) Boundary |
+| **Right Wall** | $U = 0, \; V = 0$ | $\theta = 0$ | No-slip, Adiabatic (Insulated) Boundary |
 | **Circular Obstacle** | $U = 0, \; V = 0$ | $\theta = 0$ | No-slip, Cold Internal Obstacle |
 ## Case 1
 - Neural networks purely fed data
@@ -56,9 +62,8 @@ The domain of interest consists of a sliding top lid, two stationary sidewalls, 
 
 ## Case 3
 - No training data
-
-# Loss
-$$\mathcal{L}_{\text{total}} = w_{\text{pde}} \mathcal{L}_{\text{PDE}} + w_{\text{bc}} \mathcal{L}_{\text{BC}}$$
+- Loss:
+* $$\mathcal{L}_{\text{total}} = w_{\text{pde}} \mathcal{L}_{\text{PDE}} + w_{\text{bc}} \mathcal{L}_{\text{BC}}$$
 
 * **PDE Residual Loss:**
   $$\mathcal{L}_{\text{PDE}} = \frac{1}{N_f} \sum \left( \mathcal{R}_{\text{mass}}^2 + \mathcal{R}_{u\text{-mom}}^2 + \mathcal{R}_{v\text{-mom}}^2 + \mathcal{R}_{\text{energy}}^2 \right)$$
