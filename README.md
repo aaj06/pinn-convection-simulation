@@ -33,7 +33,7 @@ Where:
 * $U, V$: Dimensionless velocity components in $X$ and $Y$ directions
 * $P$: Dimensionless fluid pressure
 * $\theta$: Dimensionless temperature ($\theta = 1$ is Hot, $\theta = 0$ is Cold)
-* $\text{Ri}$: Richardson number (Buoyancy vs. Shear forces, $\text{Ri} = \text{Gr}/\text{Re}^2$)
+* $\text{Ri}$: Richardson number (Buoyancy vs. Shear forces)
 * $\text{Ha}$: Hartmann number (Magnetic force vs. Viscous forces)
 
 2. Boundary Conditions
