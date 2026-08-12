@@ -51,8 +51,8 @@ The domain of interest consists of a sliding top lid, two stationary sidewalls, 
 - Fully supervised learning
 
 ## Case 2
-- Trained on t in [0,0.4]
-- Expected extrapolation error for t > 0.4
+- Trained on $X$ in [0,0.4]
+- Expected extrapolation error for $X$ > 0.4
 
 ## Case 3
 - No training data
